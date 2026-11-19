@@ -21,6 +21,17 @@
  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
 }
 
+@font-face{
+ font-family:"Source Serif 4";font-style:normal;font-weight:200 900;font-display:swap;
+ src:url(fonts/source-serif-4-latin-wght-normal.woff2) format("woff2-variations");
+ unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+ font-family:"Source Serif 4";font-style:normal;font-weight:200 900;font-display:swap;
+ src:url(fonts/source-serif-4-latin-ext-wght-normal.woff2) format("woff2-variations");
+ unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
 @layer reset, token, theme, atmos, base, nav, block, form, motion;
 
 @layer reset{
@@ -42,11 +53,12 @@
 
   --fd:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --fi:"Instrument Serif",Georgia,serif;
+  --fb:"Source Serif 4",Georgia,"Times New Roman",serif;
 
   --t-label:clamp(.82rem, .78rem + .18vw, .9rem);
-  --t-sm:clamp(.95rem, .92rem + .2vw, 1.05rem);
-  --t-bd:clamp(1.06rem, 1rem + .3vw, 1.22rem);
-  --t-ld:clamp(1.25rem, 1.1rem + .78vw, 1.75rem);
+  --t-sm:clamp(.94rem, .92rem + .12vw, 1rem);
+  --t-bd:clamp(1rem, .97rem + .16vw, 1.09rem);
+  --t-ld:clamp(1.1rem, 1.02rem + .4vw, 1.34rem);
   --t-h3:clamp(1.6rem, 1.35rem + 1.2vw, 2.3rem);
   --t-h2:clamp(2.2rem, 1.6rem + 2.6vw, 3.9rem);
   --t-h1:clamp(2.5rem, 1.5rem + 3.4vw, 4.4rem);
@@ -134,18 +146,31 @@
  /* The thread. One line runs the length of the page down the left gutter and
     fills as you read, with a node at the point you have reached. Every section
     hangs off it, so the page reads as one continuous line of thought. */
- .thread{position:fixed;inset-block:0;inset-inline-start:calc(var(--gut)*.42);inline-size:2px;
-   z-index:80;pointer-events:none;background:#ff1a1a26}
- .thread i{position:absolute;inset:0;background:var(--red);transform-origin:50% 0;transform:scaleY(0)}
- .thread b{position:absolute;inset-inline-start:50%;inset-block-start:0;inline-size:10px;block-size:10px;
-   margin:-5px 0 0 -5px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px #ff1a1a33,0 0 18px #ff1a1a99;opacity:0}
+ .thread{position:fixed;inset-block:0;inset-inline-start:calc(var(--gut)*.42);inline-size:3px;
+   z-index:80;pointer-events:none;background:#ff1a1a2e;border-radius:3px}
+ /* The fill is revealed by a clip, not a scale, so the light running down it keeps its shape. */
+ .thread i{position:absolute;inset:0;border-radius:3px;clip-path:inset(0 0 100% 0);
+   background:linear-gradient(180deg,#ff0000 0,#ff0000 38%,#ffb3a8 50%,#ff0000 62%,#ff0000 100%) 0 0/100% 260px repeat-y;
+   filter:drop-shadow(0 0 6px #ff1a1acc) drop-shadow(0 0 14px #ff1a1a66);
+   animation:thread-run 1.5s linear infinite}
+ .thread b{position:absolute;inset-inline-start:50%;inset-block-start:0;inline-size:16px;block-size:16px;
+   margin:-8px 0 0 -8px;border-radius:50%;background:#fff;border:4px solid var(--red);
+   box-shadow:0 0 0 5px #ff1a1a3d,0 0 26px 4px #ff1a1ad9;opacity:0}
+ .thread b::before,.thread b::after{content:"";position:absolute;inset:-4px;border-radius:50%;
+   border:2px solid var(--red);animation:thread-ping 1.9s var(--ez) infinite}
+ .thread b::after{animation-delay:.95s}
+ @keyframes thread-run{to{background-position:0 260px}}
+ @keyframes thread-ping{from{transform:scale(1);opacity:.9}to{transform:scale(3.4);opacity:0}}
  @supports(animation-timeline:scroll()){
-  .thread i{animation:thread-fill linear both;animation-timeline:scroll(root block)}
+  .thread i{animation:thread-run 1.5s linear infinite,thread-fill linear both;animation-timeline:auto,scroll(root block)}
   .thread b{opacity:1;animation:thread-node linear both;animation-timeline:scroll(root block)}
-  @keyframes thread-fill{to{transform:scaleY(1)}}
+  @keyframes thread-fill{to{clip-path:inset(0 0 0 0)}}
   @keyframes thread-node{from{inset-block-start:0}to{inset-block-start:100%}}
  }
- @media(max-width:700px){.thread{inset-inline-start:7px}.thread b{inline-size:8px;block-size:8px;margin:-4px 0 0 -4px}}
+ @media(max-width:700px){.thread{inset-inline-start:6px;inline-size:2px}
+  .thread b{inline-size:12px;block-size:12px;margin:-6px 0 0 -6px;border-width:3px}}
+ @media(prefers-reduced-motion:reduce){.thread i,.thread b::before,.thread b::after{animation-name:none}
+  @supports(animation-timeline:scroll()){.thread i{animation:thread-fill linear both;animation-timeline:scroll(root block)}}}
  .nav{position:fixed;inset-block-start:0;inset-inline:0;z-index:90;padding-block:1.15rem;
       transition:background .5s var(--ez),border-color .5s var(--ez)}
  .nav.on{background:color-mix(in srgb,var(--navbg,#050507) 80%,transparent);
@@ -668,4 +693,84 @@
    font-size:clamp(1.6rem,1.1rem + 2.4vw,3.1rem);line-height:1.14;letter-spacing:-.02em;
    color:var(--fg);max-inline-size:20ch;margin-inline:auto;text-wrap:balance}
  .punch b{font-family:var(--fd);font-style:normal;font-weight:900;color:var(--red)}
+}
+
+@layer block{
+ /* Running text is set in a reading serif; headings, labels and buttons stay in Archivo. */
+ .lede,.tried-i p,.track p,.row-i p:not(.big),details p,.close p,.chosen-l li,.gap-col li,.aline,.cta-note,.visit li,.wk-note,.wall-n{
+   font-family:var(--fb);font-optical-sizing:auto;letter-spacing:0}
+ .lede{max-inline-size:46ch;line-height:1.5}
+ .row-i p:not(.big),.tried-i p,details p{line-height:1.66}
+ .chosen-l li{font-size:1rem}
+ .visit li{font-size:.97rem}
+ .lede b,.row-i p b,.chosen-l li b{font-family:var(--fd);font-weight:700;letter-spacing:-.01em}
+
+ /* Work: a wall of live sites. Each tile is a small browser window. */
+ .wk-bar{display:flex;flex-wrap:wrap;gap:.5rem;margin-block-start:clamp(2.2rem,4vw,3.2rem)}
+ .wk-bar button{cursor:pointer;padding:.55rem 1rem;border:1px solid var(--ln2);border-radius:99px;
+   font-size:var(--t-label);font-weight:700;letter-spacing:.02em;color:var(--tx);
+   transition:background .35s var(--ez),color .35s var(--ez),border-color .35s var(--ez),transform .35s var(--ez)}
+ .wk-bar button:hover{border-color:var(--red);color:var(--fg);transform:translateY(-2px)}
+ .wk-bar button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
+ .wk-bar button i{font-style:normal;opacity:.6;margin-inline-start:.4rem;font-weight:600}
+ .wk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin-block-start:1.6rem;
+   perspective:1400px;grid-auto-flow:dense}
+ @media(max-width:1180px){.wk{grid-template-columns:repeat(3,minmax(0,1fr))}}
+ @media(max-width:820px){.wk{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}}
+ .wk-t{--rx:0deg;--ry:0deg;--mx:50%;--my:0%;position:relative;display:flex;flex-direction:column;min-inline-size:0;
+   background:#0e0e13;border:1px solid #ffffff1a;border-radius:10px;overflow:hidden;color:#fff;
+   transform:rotateX(var(--rx)) rotateY(var(--ry)) translateZ(0);transform-style:preserve-3d;
+   transition:transform .5s var(--ez),border-color .4s var(--ez),box-shadow .5s var(--ez),opacity .4s var(--ez);
+   will-change:transform}
+ .wk-t.f{grid-column:span 2;grid-row:span 2}
+ .wk-t.f .wk-s{flex:1;aspect-ratio:auto;min-block-size:0}
+ .wk-t.f .wk-m b{font-size:1.15rem}
+ @media(max-width:820px){.wk-t.f{grid-row:auto}.wk-t.f .wk-s{flex:none;aspect-ratio:674/300}}
+ @media(max-width:520px){.wk-t:not(.f) .wk-c span{font-size:.62rem;margin-inline-start:.3rem}.wk-t:not(.f) .wk-m{padding:.6rem .6rem .7rem;gap:.4rem}
+  .wk-t:not(.f) .wk-m b{font-size:.84rem}.wk-t:not(.f) .wk-m small{font-size:.76rem}.wk-t:not(.f) .wk-m u{display:none}}
+ .wk-t[hidden]{display:none}
+ .wk-c{display:flex;align-items:center;gap:.32rem;padding:.5rem .7rem;background:#17171d;border-block-end:1px solid #ffffff12}
+ .wk-c i{inline-size:7px;block-size:7px;border-radius:50%;background:#3a3a43;transition:background .3s var(--ez)}
+ .wk-c span{margin-inline-start:.5rem;font-size:.72rem;font-weight:600;letter-spacing:.01em;color:#85868b;
+   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s var(--ez)}
+ .wk-s{position:relative;overflow:hidden;aspect-ratio:674/300;background:#17171d}
+ .wk-s img{inline-size:100%;block-size:100%;object-fit:cover;object-position:50% 0;
+   transform-origin:50% 0;transition:transform 1.1s var(--ez),filter .5s var(--ez);filter:saturate(.86) brightness(.9)}
+ .wk-s::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .4s var(--ez);
+   background:radial-gradient(420px circle at var(--mx) var(--my),#ffffff38,transparent 62%)}
+ .wk-m{display:flex;align-items:center;gap:.8rem;padding:.8rem .9rem .9rem;position:relative}
+ .wk-m::before{content:"";position:absolute;inset-inline:0;inset-block-start:0;block-size:2px;background:var(--red);
+   transform:scaleX(0);transform-origin:0 50%;transition:transform .6s var(--ez)}
+ .wk-m div{min-inline-size:0;flex:1}
+ .wk-m b{display:block;font-size:.98rem;font-weight:750;letter-spacing:-.02em;line-height:1.2}
+ .wk-m small{display:block;font-family:var(--fb);font-size:.86rem;color:#9a9ba1;margin-block-start:.2rem;line-height:1.3}
+ .wk-m u{text-decoration:none;flex:none;inline-size:30px;block-size:30px;border-radius:50%;border:1px solid #ffffff2e;
+   display:grid;place-items:center;font-size:.9rem;color:#b9babd;
+   transition:background .35s var(--ez),border-color .35s var(--ez),transform .5s var(--spring),color .35s var(--ez)}
+ @media(hover:hover){
+  .wk-t:hover{border-color:#ff1a1a99;box-shadow:0 26px 60px -22px #ff1a1a8c,0 0 0 1px #ff1a1a40;z-index:2;
+    transform:rotateX(var(--rx)) rotateY(var(--ry)) translateY(-6px) scale(1.025)}
+  .wk-t:hover .wk-s img{transform:scale(1.09);filter:none}
+  .wk-t:hover .wk-s::after{opacity:1}
+  .wk-t:hover .wk-m::before{transform:scaleX(1)}
+  .wk-t:hover .wk-c i{background:var(--red)}
+  .wk-t:hover .wk-c i:nth-child(2){background:#ff7a70;transition-delay:.06s}
+  .wk-t:hover .wk-c i:nth-child(3){background:#ffc2bc;transition-delay:.12s}
+  .wk-t:hover .wk-c span{color:#fff}
+  .wk-t:hover .wk-m u{background:var(--red);border-color:var(--red);color:#fff;transform:rotate(-45deg) scale(1.12)}
+  .wk:hover .wk-t:not(:hover){opacity:.62}
+ }
+ .wk-t:active{transform:scale(.985)}
+ @media(prefers-reduced-motion:reduce){.wk-t,.wk-s img{transition:none;transform:none!important}}
+ .wk-note{margin-block-start:1.6rem;font-size:var(--t-sm);color:var(--mu);max-inline-size:62ch}
+
+ .wall{display:flex;flex-wrap:wrap;gap:.5rem;margin-block-start:clamp(2rem,4vw,3rem);list-style:none;padding:0}
+ .wall li{display:block}
+ .wall li>*{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.05rem;border:1px solid var(--ln2);border-radius:8px;
+   font-size:var(--t-sm);font-weight:700;letter-spacing:-.01em;color:var(--fg);background:var(--glass);
+   transition:transform .45s var(--spring),background .3s var(--ez),color .3s var(--ez),border-color .3s var(--ez)}
+ .wall li>*:hover{transform:translateY(-4px) rotate(-1.2deg);background:var(--fg);color:var(--bg);border-color:var(--fg)}
+ .wall li:nth-child(even)>*:hover{transform:translateY(-4px) rotate(1.2deg)}
+ .wall a::after{content:"\2197";color:var(--red);font-weight:800}
+ .wall-n{margin-block-start:1.4rem;font-size:var(--t-sm);color:var(--mu);max-inline-size:60ch}
 }
