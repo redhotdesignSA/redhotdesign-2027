@@ -393,3 +393,20 @@ $$('[data-n]').forEach(el => {
     t.addEventListener('pointerleave',function(){t.style.setProperty('--rx','0deg');t.style.setProperty('--ry','0deg')});
   });
 })();
+
+/* Hero: type a phrase, hold, backspace it, type the next. */
+(function(){
+  var rot=document.querySelector('.rot'), em=rot&&rot.querySelector('em'); if(!em) return;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var P=['bringing in work.','selling the product.','making the phone ring.','booking the meetings.','filling the diary.'];
+  var i=0, n=P[0].length, del=true;
+  function tick(){
+    var s=P[i], wait;
+    if(del){ n--; wait=55; if(n===0){ del=false; i=(i+1)%P.length; wait=520; } }
+    else   { n++; wait=95+Math.random()*70; if(n===P[i].length){ del=true; wait=2600; } }
+    em.dataset.t=(del&&n>0?s:P[i]).slice(0,n);
+    rot.classList.toggle('busy',wait<500);
+    setTimeout(tick,wait);
+  }
+  setTimeout(function(){rot.classList.add('busy');tick()},3200);
+})();

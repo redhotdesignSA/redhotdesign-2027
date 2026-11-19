@@ -221,44 +221,15 @@
     is in the DOM once, unanimated, for screen readers and crawlers. */
  .vh{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;
    clip-path:inset(50%);white-space:nowrap;border:0;padding:0;margin:-1px}
- .rot{display:inline-block;position:relative;vertical-align:top;
-   min-inline-size:11ch;min-block-size:1.08em}
- .rot em{position:absolute;inset-inline-start:0;inset-block-start:0;
-   white-space:nowrap;opacity:0;animation:rotcy 14s linear infinite both}
- .rot em:first-child{opacity:1}
- /* The phrases live here, not in the markup, so the h1 reads as one clean
-    sentence to a crawler or an AI answer engine. The canonical phrase sits in
-    the DOM once, in .vh, which is what assistive tech and extractors get. */
- .rot em:nth-child(1)::before{content:"bringing in work."}
- .rot em:nth-child(2)::before{content:"selling the product."}
- .rot em:nth-child(3)::before{content:"making the phone ring."}
- .rot em:nth-child(4)::before{content:"booking the meetings."}
- .rot em:nth-child(5)::before{content:"filling the diary."}
- .rot em::after{content:"";position:absolute;inset-inline:0;inset-block-start:56%;
-   block-size:.05em;min-block-size:2px;background:var(--fg);opacity:.9;
-   transform:scaleX(0);transform-origin:left;
-   animation:rotst 14s linear infinite both}
- .rot em:nth-child(2),.rot em:nth-child(2)::after{animation-delay:2.8s}
- .rot em:nth-child(3),.rot em:nth-child(3)::after{animation-delay:5.6s}
- .rot em:nth-child(4),.rot em:nth-child(4)::after{animation-delay:8.4s}
- .rot em:nth-child(5),.rot em:nth-child(5)::after{animation-delay:11.2s}
- @keyframes rotcy{
-   0%{opacity:0}
-   1.5%{opacity:1}
-   18%{opacity:1}
-   20%{opacity:0}
-   100%{opacity:0}
- }
- @keyframes rotst{
-   0%,8%{transform:scaleX(0)}
-   13%,19%{transform:scaleX(1)}
-   19.01%,100%{transform:scaleX(0)}
- }
- @media(prefers-reduced-motion:reduce){
-   .rot em{animation:none;opacity:0}
-   .rot em:first-child{opacity:1}
-   .rot em::after{animation:none;transform:scaleX(1)}
- }
+ /* The phrase is typed and backspaced by script into a data attribute and drawn with
+    generated content, so the h1 text stays exactly what .vh says. */
+ .rot{display:inline-block;white-space:nowrap;min-block-size:1em;vertical-align:top}
+ .rot em::before{content:attr(data-t)}
+ .rot i{display:inline-block;inline-size:.055em;block-size:.82em;margin-inline-start:.06em;background:var(--red);
+   vertical-align:-.06em;border-radius:2px;animation:caret 1s steps(1) infinite}
+ .rot.busy i{animation:none}
+ @keyframes caret{50%{opacity:0}}
+ @media(prefers-reduced-motion:reduce){.rot i{display:none}}
 
  .proof{margin-block-start:clamp(3.5rem,7vw,6rem);padding-block-start:2.2rem;border-block-start:1px solid var(--ln)}
  .proof-t{font-size:var(--t-label);font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu)}
