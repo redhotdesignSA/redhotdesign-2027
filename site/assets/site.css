@@ -497,21 +497,17 @@
    letter-spacing:-.02em;padding-block-start:.22em;font-variant-numeric:tabular-nums}
  .tried-i h3{font-size:var(--t-h3);letter-spacing:-.035em;font-weight:800;line-height:1.08;
    margin:0 0 .5rem;position:relative;display:inline-block}
- .tried-i h3::after{content:"";position:absolute;inset-inline:0;inset-block-start:52%;
-   block-size:2px;background:var(--red);opacity:.85;transform:scaleX(1);transform-origin:left}
 
- /* Where it is supported, each line strikes itself out as you reach it. */
+ /* These are symptoms the reader recognises, not things to cross off, so the
+    reveal is the marker and the rule beside it, never a strike-through. */
  @supports(animation-timeline:view()){
   @media(prefers-reduced-motion:no-preference){
-   .tried-i h3::after{animation:strike linear both;
-     animation-timeline:view();animation-range:entry 52% cover 30%}
    .tried-i::after{animation:barin linear both;
      animation-timeline:view();animation-range:entry 42% cover 26%}
    .tried-i .mk{animation:mkred linear both;
      animation-timeline:view();animation-range:entry 42% cover 26%}
   }
  }
- @keyframes strike{from{transform:scaleX(0)}to{transform:scaleX(1)}}
  @keyframes barin{from{transform:scaleY(0)}to{transform:scaleY(1)}}
  @keyframes mkred{from{color:var(--mu)}to{color:var(--red)}}
  .tried-i p{color:var(--tx);font-size:var(--t-bd);margin:0;max-inline-size:62ch}
@@ -531,6 +527,9 @@
  .gap-col li{font-size:var(--t-sm);color:var(--tx);display:grid;
    grid-template-columns:auto 1fr;gap:.6rem;align-items:baseline}
  .gap-col li::before{content:"✓";color:#5fbf84;font-weight:900;font-size:.9em}
+ /* the second column lists what nobody asked, so it must not read as ticked off */
+ .gap-col.unasked li::before{content:"–";color:var(--mu);font-weight:700;opacity:.7}
+ .gap-col.unasked li{color:var(--mu)}
  .gap-mid{display:grid;place-items:center;position:relative;min-inline-size:clamp(90px,14vw,190px)}
  .gap-mid span{font-family:var(--fi);font-style:italic;font-size:var(--t-ld);color:var(--red);
    text-align:center;line-height:1.15;position:relative;z-index:1;padding:0 .4rem}
