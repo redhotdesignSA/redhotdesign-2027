@@ -380,3 +380,16 @@ $$('[data-n]').forEach(el => {
     if(document.startViewTransition && !calm) document.startViewTransition(go); else go();
   })});
 })();
+
+/* Glass cards: lean toward the pointer and carry a light under it. */
+(function(){
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  document.querySelectorAll('[data-glow]').forEach(function(t){
+    t.addEventListener('pointermove',function(e){
+      var r=t.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+      t.style.setProperty('--ry',((x-.5)*6).toFixed(2)+'deg'); t.style.setProperty('--rx',((.5-y)*6).toFixed(2)+'deg');
+      t.style.setProperty('--mx',(x*100).toFixed(1)+'%'); t.style.setProperty('--my',(y*100).toFixed(1)+'%');
+    });
+    t.addEventListener('pointerleave',function(){t.style.setProperty('--rx','0deg');t.style.setProperty('--ry','0deg')});
+  });
+})();
