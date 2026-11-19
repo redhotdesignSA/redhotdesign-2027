@@ -394,7 +394,8 @@
 }
 
 @layer form{
- dialog{border:0;padding:0;background:transparent;max-inline-size:min(100% - 2rem,680px);inline-size:100%}
+ dialog{border:0;padding:0;background:transparent;margin:auto;inline-size:100%;max-inline-size:min(100% - 2rem,640px);
+   max-block-size:calc(100dvh - 2rem);overflow:visible}
  dialog::backdrop{background:#050507e8;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
  @starting-style{dialog[open]{opacity:0;transform:translateY(26px) scale(.97)}}
  dialog[open]{opacity:1;transform:none;
@@ -773,4 +774,57 @@
  .wall li:nth-child(even)>*:hover{transform:translateY(-4px) rotate(1.2deg)}
  .wall a::after{content:"\2197";color:var(--red);font-weight:800}
  .wall-n{margin-block-start:1.4rem;font-size:var(--t-sm);color:var(--mu);max-inline-size:60ch}
+}
+
+@layer form{
+ /* The enquiry panel: centred, never taller than the screen, scrolls inside itself. */
+ .qz{border-radius:18px;max-block-size:calc(100dvh - 2rem);overflow-y:auto;overscroll-behavior:contain;
+   scrollbar-width:thin;scrollbar-color:#ffffff33 transparent;
+   background:linear-gradient(180deg,#14141a,#0c0c10);border-color:#ffffff24;
+   box-shadow:0 0 0 1px #ff1a1a1f,0 50px 120px -30px #000,0 0 90px -30px #ff1a1a55}
+ .qz hgroup{margin-block-end:1.1rem}
+ .qz hgroup button{inline-size:38px;block-size:38px;border-radius:50%;border:1px solid #ffffff24;display:grid;place-items:center;font-size:1rem;padding:0}
+ .qz hgroup button:hover{border-color:var(--red);background:var(--red)}
+ .track-bar{block-size:3px;border-radius:3px;overflow:hidden;margin-block-end:1.8rem}
+ .track-bar i{block-size:3px;border-radius:3px;box-shadow:0 0 12px #ff1a1a}
+ .qz h3{font-size:clamp(1.45rem,1.25rem + .9vw,1.9rem);letter-spacing:-.035em;line-height:1.12;text-wrap:balance}
+ .qz .hint{font-family:var(--fb);margin-block:.1rem 1.5rem}
+ .qz h3:has(+ .opts){margin-block-end:1.5rem}
+ .opts{display:grid;gap:.55rem}
+ .opt{padding:.95rem 1rem;border:1px solid #ffffff1f;border-radius:12px;background:#ffffff08;justify-content:flex-start;gap:.9rem;
+   font-size:1rem;color:#e6e6ea;
+   transition:border-color .3s var(--ez),background .3s var(--ez),transform .45s var(--spring),color .3s var(--ez);
+   animation:opt-in .5s var(--ez) both;animation-delay:calc(var(--i,0)*45ms)}
+ @keyframes opt-in{from{opacity:0;transform:translateY(10px)}}
+ .opt>span:nth-of-type(1){flex:1}
+ .opt kbd{flex:none;inline-size:28px;block-size:28px;border-radius:8px;border:1px solid #ffffff2e;display:grid;place-items:center;
+   font:700 .74rem/1 var(--fd);color:#9a9ba1;transition:background .3s var(--ez),border-color .3s var(--ez),color .3s var(--ez)}
+ .opt:hover,.opt:focus-visible{padding-inline-start:1rem;border-color:var(--red);background:#ff1a1a14;color:#fff;transform:translateX(4px)}
+ .opt:hover kbd,.opt:focus-visible kbd{background:var(--red);border-color:var(--red);color:#fff}
+ .opt:active{transform:scale(.985)}
+ .opt small{font-family:var(--fb);font-size:.88rem}
+ .fld{margin-block-start:0}
+ .fld-g{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+ .fld-g .w{grid-column:1/-1}
+ @media(max-width:520px){.fld-g{grid-template-columns:1fr}}
+ .fld label:not(.consent){display:grid;gap:.4rem}
+ .fld label>span{font-size:.8rem;font-weight:700;letter-spacing:.01em;color:#b9babd}
+ .fld label>span i{font-style:normal;font-weight:500;color:#77787d;margin-inline-start:.3rem}
+ .fld-g input,.fld-g textarea{padding:.68rem .85rem;border:1px solid #ffffff24;border-radius:10px;background:#ffffff0a;
+   font-size:1rem;font-weight:500;transition:border-color .3s var(--ez),background .3s var(--ez),box-shadow .3s var(--ez)}
+ .fld-g input:focus,.fld-g textarea:focus{border-color:var(--red);background:#ffffff12;box-shadow:0 0 0 3px #ff1a1a33}
+ .fld-g textarea{min-block-size:0}
+ .fld .btn{margin-block-start:1.4rem;inline-size:100%}
+ .consent{margin-block-start:1.2rem}
+ .back{margin-block-start:1.3rem}
+ .res{text-align:start}
+ .res .tick{inline-size:56px;block-size:56px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;
+   margin-block-end:1.4rem;box-shadow:0 0 0 8px #ff1a1a26,0 0 40px #ff1a1a80;animation:opt-in .6s var(--spring) both}
+ .res h3{margin-block-end:1.4rem}
+ .res ul{font-family:var(--fb);font-size:1rem}
+ @media(max-width:560px){
+  dialog{max-inline-size:100%;margin-block-end:0;max-block-size:92dvh}
+  .qz{border-radius:20px 20px 0 0;max-block-size:92dvh;padding-block-end:calc(1.6rem + env(safe-area-inset-bottom))}
+ }
+ @media(prefers-reduced-motion:reduce){.opt,.res .tick{animation:none}}
 }

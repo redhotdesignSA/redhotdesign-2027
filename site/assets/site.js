@@ -147,41 +147,43 @@ $$('[data-n]').forEach(el => {
   let step = 0, sending = false;
 
   const Q = [
-    { k:'track', h:'What do you need looked at?', hint:'Pick the closest. We get to the detail on the call.', o:[
-      ['spend','Our ad spend is not performing','Google and Meta budgets growing, results flat'],
-      ['rebuild','Our website is letting us down','Dated, slow, or it cannot carry the campaigns'],
-      ['both','Both, honestly','We are spending to send people to a site that cannot sell'],
-      ['other','Something else','Tell us in your own words at the end']]},
-    { k:'spend', h:'Roughly what do you spend on paid media each month?', hint:'Across Google, Meta and anything else. A ballpark is fine.', o:[
-      ['Under R25,000','Under R25,000',''],['R25,000 to R75,000','R25,000 to R75,000',''],
-      ['R75,000 to R250,000','R75,000 to R250,000',''],['Over R250,000','Over R250,000',''],
-      ['Not running ads yet','We are not running ads yet','']]},
-    { k:'agency', h:'Who runs it at the moment?', hint:'We work alongside incumbents as often as we replace them.', o:[
-      ['In-house','We run it in-house',''],['An agency','An agency runs it',''],
-      ['A freelancer','A freelancer or contractor',''],['Nobody','Nobody really owns it','']]},
-    { k:'urgency', h:'When would you want to start?', hint:'', o:[
-      ['Immediately','Immediately','Budget approved, looking for the right partner'],
-      ['This quarter','This quarter','Planning and comparing options'],
-      ['Exploring','Still exploring','Gathering information for later']]},
-    { k:'you', h:'Where should we send it?', hint:'We look at your site and your ad accounts before we reply, so the first call is not a discovery call.', form:true }
+    { k:'goal', h:'What should your website be doing for you?', hint:'Pick the closest.', o:[
+      ['Bring in enquiries','Bringing in enquiries',''],
+      ['Sell products online','Selling products online',''],
+      ['Get bookings','Getting bookings or appointments',''],
+      ['Make the phone ring','Making the phone ring',''],
+      ['Something else','Something else','Tell us in your own words at the end']]},
+    { k:'problem', h:'And what is it doing instead?', hint:'', o:[
+      ['Looks fine, brings in nothing','It looks fine, but nothing comes of it',''],
+      ['People visit and leave','People visit, then leave',''],
+      ['Dated and hard to update','It is dated and hard to update',''],
+      ['Paying for ads that go nowhere','We pay for ads and they go nowhere',''],
+      ['Not sure','Not sure. It just is not working','']]},
+    { k:'urgency', h:'When would you like it sorted?', hint:'', o:[
+      ['Immediately','As soon as possible',''],
+      ['This quarter','In the next few months',''],
+      ['Exploring','Just looking for now','']]},
+    { k:'you', h:'Where can we reach you?', hint:'We look at your website before we reply, so the first conversation is already about your business.', form:true }
   ];
 
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   function paint() {
-    num.textContent = step < Q.length ? `${step + 1} of ${Q.length}` : 'Complete';
-    bar.style.inlineSize = (step / Q.length * 100) + '%';
+    num.textContent = step < Q.length ? `Step ${step + 1} of ${Q.length}` : 'Sent';
+    bar.style.inlineSize = ((step + 1) / (Q.length + 1) * 100) + '%';
     const q = Q[step];
 
     if (q.form) {
       body.innerHTML = `<h3>${q.h}</h3><p class="hint">${q.hint}</p>
         <form class="fld" id="qf" novalidate>
-          <input name="name" placeholder="Your name" autocomplete="name" required>
-          <input name="company" placeholder="Company" autocomplete="organization" required>
-          <input name="email" type="email" placeholder="Work email" autocomplete="email" required>
-          <input name="phone" type="tel" placeholder="Mobile (optional)" autocomplete="tel">
-          <input name="url" type="url" placeholder="https://yourcompany.co.za">
-          <textarea name="notes" placeholder="Anything we should know (optional)"></textarea>
+          <div class="fld-g">
+          <label><span>Your name</span><input name="name" autocomplete="name" required></label>
+          <label><span>Business name</span><input name="company" autocomplete="organization" required></label>
+          <label><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email" required></label>
+          <label><span>Mobile <i>optional</i></span><input name="phone" type="tel" autocomplete="tel" inputmode="tel"></label>
+          <label class="w"><span>Your website <i>optional</i></span><input name="url" type="text" inputmode="url" autocomplete="url" placeholder="yourbusiness.co.za"></label>
+          <label class="w"><span>Anything we should know <i>optional</i></span><textarea name="notes" rows="2"></textarea></label>
+          </div>
           <input class="hp" name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true">
           <label class="consent">
             <input type="checkbox" name="consent" required>
@@ -195,7 +197,8 @@ $$('[data-n]').forEach(el => {
       $('#qf').addEventListener('submit', submit);
     } else {
       body.innerHTML = `<h3>${q.h}</h3>${q.hint ? `<p class="hint">${q.hint}</p>` : ''}
-        <div>${q.o.map((o, n) => `<button class="opt" type="button" data-i="${n}">
+        <div class="opts">${q.o.map((o, n) => `<button class="opt" type="button" data-i="${n}" style="--i:${n}">
+          <kbd aria-hidden="true">${'ABCDE'[n]}</kbd>
           <span>${esc(o[1])}${o[2] ? `<small>${esc(o[2])}</small>` : ''}</span>
           <span class="arw">&rarr;</span></button>`).join('')}</div>
         ${step ? '<button class="back" type="button" data-back>&larr; Back</button>' : ''}`;
@@ -220,6 +223,10 @@ $$('[data-n]').forEach(el => {
     const fd = new FormData(f);
     const payload = { ...A };
     fd.forEach((v, k) => { payload[k] = k === 'consent' ? true : v; });
+    if (payload.url && !/^https?:\/\//i.test(payload.url)) payload.url = 'https://' + payload.url.trim();
+    payload.track = A.goal || '';
+    payload.notes = ['Wants the site to: ' + (A.goal || 'not given'), 'What it does instead: ' + (A.problem || 'not given'), payload.notes || ''].filter(Boolean).join('\n');
+    delete payload.goal; delete payload.problem;
     payload.consent = f.consent.checked;
     A.name = payload.name || '';            // so the result screen can greet them
     payload.src = location.pathname;
@@ -244,29 +251,17 @@ $$('[data-n]').forEach(el => {
     }
   }
 
-  function fit() {
-    const s = A.spend || '', t = A.track || '';
-    if (t === 'rebuild')          return ['Rebuild', 'A full rebuild, staged for your approval section by section, usually live inside six weeks.'];
-    if (s.startsWith('Over R250')) return ['Spend review, then rebuild', 'At your level a single untracked month costs more than a year of oversight. We start with the account, then the site that receives it.'];
-    if (s.startsWith('R75'))       return ['Spend review', 'The band where account structure and landing pages start compounding against each other.'];
-    if (s.startsWith('R25'))       return ['Spend review', 'Enough budget to be worth restructuring properly, before it scales into waste.'];
-    if (s.startsWith('Not'))       return ['Rebuild first', 'Get the site right before you put money behind it. Ads into a weak site is an expensive way to learn that.'];
-    return ['A short look first', 'Below R25,000 a month in media, a full programme is hard to justify and we will say so. Start with what is actually broken.'];
-  }
-
   function done(ref) {
-    const [shape, why] = fit();
-    num.textContent = 'Complete';
+    num.textContent = 'Sent';
     bar.style.inlineSize = '100%';
     vt(() => {
       body.innerHTML = `<div class="res">
-        <h3>Thanks, ${esc((A.name || '').split(' ')[0] || 'we have it')}. Here is the likely shape.</h3>
-        <div class="band"><span>Where you would start</span><b>${esc(shape)}</b></div>
-        <p class="hint" style="margin-block-end:1.6rem">${esc(why)}</p>
+        <div class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h3>Thanks, ${esc((A.name || '').split(' ')[0] || 'we have it')}. It is with us.</h3>
         <ul>
-          <li>We review your site and your ad accounts before replying, so the first call is not a discovery call.</li>
-          <li>You will have a written view of what we would do first, within one business day.</li>
-          <li>If we are not the right fit we will say so, and point you somewhere better.</li>
+          <li>We look at your website before we reply.</li>
+          <li>You will hear from us within one business day.</li>
+          <li>If we are not the right fit, we will say so.</li>
         </ul>
         <p class="ref">Reference ${esc(ref || '')}</p>
         <button class="btn btn-sec" type="button" data-close style="margin-block-start:1.4rem"><span>Close</span></button>
@@ -279,6 +274,11 @@ $$('[data-n]').forEach(el => {
     step = 0; sending = false; paint(); dlg.showModal();
   }));
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('keydown', e => {
+    if (e.target.closest('input,textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
+    const n = 'abcde'.indexOf(e.key.toLowerCase()); const o = n > -1 && $$('.opt', body)[n];
+    if (o) { e.preventDefault(); o.click(); }
+  });
   $('[data-close]', dlg)?.addEventListener('click', () => dlg.close());
   dlg.addEventListener('close', () => { bar.style.inlineSize = '0%'; });
 })();
