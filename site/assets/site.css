@@ -131,12 +131,21 @@
 }
 
 @layer nav{
- .prog{position:fixed;inset-block-start:0;inset-inline:0;block-size:2px;z-index:100}
- .prog i{display:block;block-size:100%;background:var(--red);transform-origin:0 50%;transform:scaleX(0)}
+ /* The thread. One line runs the length of the page down the left gutter and
+    fills as you read, with a node at the point you have reached. Every section
+    hangs off it, so the page reads as one continuous line of thought. */
+ .thread{position:fixed;inset-block:0;inset-inline-start:calc(var(--gut)*.42);inline-size:2px;
+   z-index:80;pointer-events:none;background:#ff1a1a26}
+ .thread i{position:absolute;inset:0;background:var(--red);transform-origin:50% 0;transform:scaleY(0)}
+ .thread b{position:absolute;inset-inline-start:50%;inset-block-start:0;inline-size:10px;block-size:10px;
+   margin:-5px 0 0 -5px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px #ff1a1a33,0 0 18px #ff1a1a99;opacity:0}
  @supports(animation-timeline:scroll()){
-  .prog i{animation:grow linear;animation-timeline:scroll(root block)}
-  @keyframes grow{to{transform:scaleX(1)}}
+  .thread i{animation:thread-fill linear both;animation-timeline:scroll(root block)}
+  .thread b{opacity:1;animation:thread-node linear both;animation-timeline:scroll(root block)}
+  @keyframes thread-fill{to{transform:scaleY(1)}}
+  @keyframes thread-node{from{inset-block-start:0}to{inset-block-start:100%}}
  }
+ @media(max-width:700px){.thread{inset-inline-start:7px}.thread b{inline-size:8px;block-size:8px;margin:-4px 0 0 -4px}}
  .nav{position:fixed;inset-block-start:0;inset-inline:0;z-index:90;padding-block:1.15rem;
       transition:background .5s var(--ez),border-color .5s var(--ez)}
  .nav.on{background:color-mix(in srgb,var(--navbg,#050507) 80%,transparent);
@@ -227,7 +236,19 @@
 
  .proof{margin-block-start:clamp(3.5rem,7vw,6rem);padding-block-start:2.2rem;border-block-start:1px solid var(--ln)}
  .proof-t{font-size:var(--t-label);font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu)}
- .proof ul{list-style:none;padding:0;margin-block-start:1.5rem;display:flex;flex-wrap:wrap;gap:.9rem 2.6rem}
+ .proof ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:nowrap;gap:0 3.2rem;padding-inline-end:3.2rem;flex:none}
+ .proof li{white-space:nowrap}
+ .marq{display:flex;overflow:hidden;margin-block-start:1.5rem;
+   mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+   -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+ .marq ul{animation:marq 38s linear infinite}
+ .marq:hover ul{animation-play-state:paused}
+ @keyframes marq{to{transform:translateX(-100%)}}
+ @media(prefers-reduced-motion:reduce){
+   .marq{mask-image:none;-webkit-mask-image:none}
+   .marq ul{animation:none;flex-wrap:wrap;gap:.9rem 2.6rem}
+   .marq ul[aria-hidden]{display:none}
+ }
  .proof li{font-size:var(--t-sm);font-weight:700;color:var(--mu);letter-spacing:-.01em;
            transition:color .35s var(--ez),transform .45s var(--spring)}
  .proof li:hover{color:var(--fg);transform:translateY(-3px)}
@@ -576,6 +597,36 @@
  /* the second column lists what nobody asked, so it must not read as ticked off */
  .gap-col.unasked li::before{content:"–";color:var(--mu);font-weight:700;opacity:.7}
  .gap-col.unasked li{color:var(--mu)}
+
+ /* how we work, as four numbered cards */
+ .cards4{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.1rem}
+ .cards4 .row-i,.cards4 .row-i:last-child{display:block;position:relative;border:0;background:#0b0b0f;
+   padding:clamp(1.6rem,3vw,2.4rem);padding-block-start:clamp(4.6rem,7vw,6rem);
+   transition:transform .5s var(--ez),box-shadow .5s var(--ez)}
+ .cards4 .row-i:hover{background:#0b0b0f;transform:translateY(-4px);box-shadow:0 18px 40px -18px #ff1a1a66}
+ .cards4 .row-i b.n,.cards4 .row-i:hover b.n{position:absolute;inset-block-start:clamp(1.3rem,2.4vw,1.9rem);
+   inset-inline-end:clamp(1.4rem,2.6vw,2rem);color:var(--red);-webkit-text-stroke:0;min-inline-size:0;
+   font-size:clamp(2.4rem,1.8rem + 2vw,3.6rem)}
+ .cards4 .row-i h3{color:#fff}
+ .cards4 .row-i p{color:#c9c9d1}
+ @media(max-width:760px){.cards4{grid-template-columns:1fr}}
+
+ /* the framed statement: the line turns a corner and underlines the claim */
+ .frame{margin-block-start:1.8rem;padding:0 0 clamp(1.8rem,3.5vw,2.8rem) clamp(1.4rem,3vw,2.6rem);
+   border-inline-start:2px solid var(--red);border-block-end:2px solid var(--red);
+   border-end-start-radius:clamp(22px,3vw,40px)}
+ .frame h2{max-inline-size:20ch;margin:0}
+ .chosen-g{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(2rem,5vw,4.5rem);
+   margin-block-start:clamp(2.4rem,5vw,4rem);align-items:start}
+ .chosen-g .lede{margin:0}
+ .chosen-l{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:c}
+ .chosen-l li{counter-increment:c;display:grid;grid-template-columns:2.6em 1fr;padding-block:1.15rem;
+   border-block-start:1px solid var(--ln);font-size:1.08rem;line-height:1.5;color:var(--mu)}
+ .chosen-l li:last-child{border-block-end:1px solid var(--ln)}
+ .chosen-l li::before{content:counter(c,decimal-leading-zero);color:var(--red);font-weight:800;font-size:.8em;
+   letter-spacing:.08em;padding-block-start:.25em}
+ .chosen-l li b{color:var(--fg)}
+ @media(max-width:860px){.chosen-g{grid-template-columns:1fr}}
 
  /* hero panel: one visit, step by step. Height is reserved so the panel
     never resizes as steps arrive. */
