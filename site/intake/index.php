@@ -48,7 +48,7 @@ $fields = [
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>Getting started · RedHot Design</title><link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/archivo-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=52b9647ead"><link rel="stylesheet" href="/studio/studio.css?v=c6501578c6"></head>
+<link rel="stylesheet" href="/assets/site.css?v=7a5fcb149e"><link rel="stylesheet" href="/studio/studio.css?v=c6501578c6"></head>
 <body class="dark"><main class="sec dark" style="padding-block:clamp(4rem,10vw,7rem)"><div class="wrap narrow">
 <?php if (!$deal): ?>
   <p class="label">Link not recognised</p>
