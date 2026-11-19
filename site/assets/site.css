@@ -576,6 +576,26 @@
  /* the second column lists what nobody asked, so it must not read as ticked off */
  .gap-col.unasked li::before{content:"–";color:var(--mu);font-weight:700;opacity:.7}
  .gap-col.unasked li{color:var(--mu)}
+
+ /* hero panel: one visit, step by step. Height is reserved so the panel
+    never resizes as steps arrive. */
+ .visit{list-style:none;margin:1.2rem 0 0;padding:0;display:grid;gap:.85rem;
+   min-block-size:10.4em;align-content:start;counter-reset:v}
+ #vCat{min-block-size:1.7em}
+ .visit li{counter-increment:v;display:grid;grid-template-columns:2.1em 1fr;
+   font-size:1.02rem;line-height:1.45;color:var(--fg);
+   opacity:0;transform:translateY(6px);transition:opacity .5s var(--ez),transform .5s var(--ez)}
+ .visit li.on{opacity:1;transform:none}
+ .visit li::before{content:counter(v,decimal-leading-zero);font-size:.72em;font-weight:800;
+   letter-spacing:.08em;color:var(--mu);padding-block-start:.3em}
+ .visit li.gone{color:var(--red);font-weight:700}
+ .visit li.gone::before{color:var(--red)}
+ #vNote{min-block-size:3.2em;opacity:0;transition:opacity .6s var(--ez)}
+ #vNote.on{opacity:1}
+ @media(max-width:700px){.visit{min-block-size:17em} #vNote{min-block-size:5em} #vCat{min-block-size:3.3em}}
+ /* on a phone the hero glow sits directly behind the panel, so the glass
+    goes near-opaque to keep the red lines readable */
+ @media(max-width:700px){.stream{background:#0a0a0eeb}}
  .gap-mid{display:grid;place-items:center;position:relative;min-inline-size:clamp(90px,14vw,190px)}
  .gap-mid span{font-family:var(--fi);font-style:italic;font-size:var(--t-ld);color:var(--red);
    text-align:center;line-height:1.15;position:relative;z-index:1;padding:0 .4rem}

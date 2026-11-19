@@ -75,27 +75,33 @@ $$('[data-n]').forEach(el => {
   calc();
 })();
 
-/* ── anatomy-of-an-answer panel ── */
+/* ── an ordinary visit, replayed ── */
 (() => {
-  const aTxt = $('#aTxt'); if (!aTxt) return;
-  const qTxt = $('#qTxt'), cat = $('#catName'), dots = $('#dots'), srcBox = $('#srcBox');
+  const list = $('#vSteps'); if (!list) return;
+  const cat = $('#vCat'), note = $('#vNote'), dots = $('#dots');
   const SCENES = [
-    { cat: 'Industrial supply · Gauteng',
-      q: 'best industrial cleaning chemical suppliers in Gauteng',
-      a: 'The suppliers most often referenced for industrial hygiene chemicals in Gauteng are §, § and §, each cited for manufacturing capability and bulk supply.',
-      src: ['A regional industry directory', 'A 2025 trade roundup', 'Google Business profiles', 'A sector comparison page'] },
-    { cat: 'Commercial solar · Eastern Cape',
-      q: 'who installs commercial solar for warehouses in the Eastern Cape',
-      a: 'For commercial-scale installations in the Eastern Cape, § , § and § are the installers most consistently named, usually alongside their accreditation listings.',
-      src: ['An accreditation register', 'A provincial news feature', 'Two installer directories', 'A review summary'] },
-    { cat: 'Specialist manufacturing · National',
-      q: 'which South African manufacturers supply food-grade packaging',
-      a: 'South African manufacturers most frequently named for food-grade packaging include §, § and §, typically cited with their certification records.',
-      src: ['A certification database', 'An industry body member list', 'A buyer guide article', 'Two trade listings'] }
+    { cat: 'A plumbing company · Tuesday, 19:40',
+      steps: ['Arrives from a search, with water on the floor.',
+              'Looks for a phone number. It is in the footer.',
+              'Scrolls past a paragraph about the company history.',
+              'Leaves, and calls the next result.'] },
+    { cat: 'An online shop · Saturday, 10:15',
+      steps: ['Arrives from an advert for one specific product.',
+              'Lands on the homepage. The product is not on it.',
+              'Searches, finds it, cannot see the delivery cost.',
+              'Leaves, with the basket still empty.'] },
+    { cat: 'A consultancy · Thursday, 14:05',
+      steps: ['Arrives on a recommendation, already half convinced.',
+              'Wants to know what working together looks like.',
+              'Finds a list of services and a contact form.',
+              'Leaves, meaning to come back. Does not.'] },
+    { cat: 'A practice · Monday, 08:20',
+      steps: ['Arrives wanting an appointment this week.',
+              'Cannot tell whether new patients are being taken.',
+              'Is asked to phone during office hours.',
+              'Leaves, and books somewhere that lets them.'] }
   ];
-  let i = 0, tm, hold, started = false;
-  const redact = t => t.replace(/§/g, '<span class="rd" aria-label="a business name"></span>');
-
+  let i = 0, tm, started = false;
   SCENES.forEach((s, n) => {
     const b = document.createElement('button');
     b.type = 'button'; b.setAttribute('role', 'tab');
@@ -104,35 +110,33 @@ $$('[data-n]').forEach(el => {
     b.addEventListener('click', () => { i = n; play(); });
     dots.appendChild(b);
   });
-
-  const paintSrc = list => {
-    srcBox.innerHTML = '<p class="src-l">Sources it cited</p>' +
-      list.map(x => `<span class="src">${x}</span>`).join('') +
-      '<p class="src-note">Four sources. Not one of them a company’s own website.</p>';
-  };
-
+  const NOTE = 'Nothing on the site was broken. It simply was not built around what this person came to do.';
   function play() {
-    clearTimeout(tm); clearTimeout(hold);
+    clearTimeout(tm);
     const s = SCENES[i];
     [...dots.children].forEach((d, n) => d.setAttribute('aria-current', String(n === i)));
-    cat.textContent = s.cat; qTxt.textContent = s.q; srcBox.innerHTML = '';
-    if (rm) { aTxt.innerHTML = redact(s.a); paintSrc(s.src); return; }
-    const plain = s.a.replace(/§/g, '██████');
-    let c = 0; aTxt.textContent = '';
+    cat.textContent = s.cat; list.innerHTML = ''; note.textContent = ''; note.classList.remove('on');
+    const add = k => {
+      const li = document.createElement('li');
+      li.textContent = s.steps[k];
+      if (k === s.steps.length - 1) li.className = 'gone';
+      list.appendChild(li);
+      requestAnimationFrame(() => li.classList.add('on'));
+    };
+    if (rm) { s.steps.forEach((_, k) => add(k)); note.textContent = NOTE; note.classList.add('on'); return; }
+    let k = 0;
     (function go() {
-      c += 2;
-      if (c >= plain.length) {
-        aTxt.innerHTML = redact(s.a); paintSrc(s.src);
-        hold = setTimeout(() => { i = (i + 1) % SCENES.length; play(); }, 6200);
-        return;
-      }
-      aTxt.innerHTML = plain.slice(0, c).replace(/</g, '&lt;') + '<span class="car"></span>';
-      tm = setTimeout(go, 13);
+      add(k); k++;
+      if (k < s.steps.length) { tm = setTimeout(go, 1150); return; }
+      tm = setTimeout(() => {
+        note.textContent = NOTE; note.classList.add('on');
+        tm = setTimeout(() => { i = (i + 1) % SCENES.length; play(); }, 5200);
+      }, 900);
     })();
   }
   new IntersectionObserver((es, o) => es.forEach(e => {
     if (e.isIntersecting && !started) { started = true; play(); o.disconnect(); }
-  }), { threshold: .3 }).observe(aTxt);
+  }), { threshold: .3 }).observe(list);
 })();
 
 /* ── qualifier ─────────────────────────────────────────── */
