@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /studio/
+Disallow: /intake/
+Disallow: /api/
+
+Sitemap: https://redhotdesign.co.za/sitemap.xml
