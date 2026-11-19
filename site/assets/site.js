@@ -158,7 +158,8 @@ $$('[data-n]').forEach(el => {
       ['People visit and leave','People visit, then leave',''],
       ['Dated and hard to update','It is dated and hard to update',''],
       ['Paying for ads that go nowhere','We pay for ads and they go nowhere',''],
-      ['Not sure','Not sure. It just is not working','']]},
+      ['Not sure','Not sure. It just is not working',''],
+      ['No website yet','We do not have a website yet','']]},
     { k:'urgency', h:'When would you like it sorted?', hint:'', o:[
       ['Immediately','As soon as possible',''],
       ['This quarter','In the next few months',''],
@@ -198,7 +199,7 @@ $$('[data-n]').forEach(el => {
     } else {
       body.innerHTML = `<h3>${q.h}</h3>${q.hint ? `<p class="hint">${q.hint}</p>` : ''}
         <div class="opts">${q.o.map((o, n) => `<button class="opt" type="button" data-i="${n}" style="--i:${n}">
-          <kbd aria-hidden="true">${'ABCDE'[n]}</kbd>
+          <kbd aria-hidden="true">${'ABCDEF'[n]}</kbd>
           <span>${esc(o[1])}${o[2] ? `<small>${esc(o[2])}</small>` : ''}</span>
           <span class="arw">&rarr;</span></button>`).join('')}</div>
         ${step ? '<button class="back" type="button" data-back>&larr; Back</button>' : ''}`;
@@ -276,7 +277,7 @@ $$('[data-n]').forEach(el => {
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener('keydown', e => {
     if (e.target.closest('input,textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
-    const n = 'abcde'.indexOf(e.key.toLowerCase()); const o = n > -1 && $$('.opt', body)[n];
+    const n = 'abcdef'.indexOf(e.key.toLowerCase()); const o = n > -1 && $$('.opt', body)[n];
     if (o) { e.preventDefault(); o.click(); }
   });
   $('[data-close]', dlg)?.addEventListener('click', () => dlg.close());
