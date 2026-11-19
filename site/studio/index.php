@@ -33,7 +33,7 @@ $money = fn($n) => 'R' . number_format((float)$n, 0, '.', ' ');
 <meta name="robots" content="noindex,nofollow">
 <title>Studio · RedHot Design</title>
 <link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/studio/studio.css">
+<link rel="stylesheet" href="/studio/studio.css?v=c6501578c6">
 </head><body>
 
 <header class="top">

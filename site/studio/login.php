@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?><!DOCTYPE html><html lang="en-ZA"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>Studio</title><link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/studio/studio.css"></head>
+<link rel="stylesheet" href="/studio/studio.css?v=c6501578c6"></head>
 <body class="mid"><form method="post" class="card">
 <h1>Studio</h1>
 <?php if ($err): ?><p class="err"><?= htmlspecialchars($err) ?></p><?php endif; ?>
